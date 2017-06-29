@@ -209,7 +209,17 @@ def ProfileGeneratedString(Text, profile, k):
 	probabilities = Normalize(probabilities)
 	return WeightedDie(probabilities)
 
-
+# To-do
+#     GibbsSampler(Dna, k, t, N)
+#         randomly select k-mers Motifs = (Motif1, …, Motift) in each string from Dna
+#         ﻿BestMotifs ← Motifs
+#         for j ← 1 to N
+#             i ← randomly generated integer between 1 and t
+#             Profile ← profile matrix formed from all strings in Motifs except for Motifi
+#             Motifi ← Profile-randomly generated k-mer in the i-th string
+#             if Score(Motifs) < Score(BestMotifs)
+#                 BestMotifs ← Motifs
+#         return BestMotifs
 
 		
 
