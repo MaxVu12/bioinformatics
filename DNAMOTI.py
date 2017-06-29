@@ -177,6 +177,39 @@ def RandomizedMotifSearch(Dna, k, t):
 			return BestMotifs
 
 #Input: A dictionary Probabilites, where keys are k-mers and values are the probabilities of these k-mers (which do not necessary sum up to 1)
+#Output: A normalized dictionary where the probability of each k-mer was divided by the sum of all k-mers' probbabilities
+def Normalize(Probabilities):
+	total = 0
+	for vals in Probabilities.values():
+		total += vals
+	for k in Probabilities.keys():
+		Probabilities[k] = Probabilities[k]/total
+	return Probabilities 
+
+#Input: A dictionary Probabilities whose keys are k-mers and whose values are the probabilities of these kmers
+#Output: A randomly chosen k-mer with respect to the values in Probabilities 
+#Remember to import random
+def WeightedDie(Probabilities):
+	kmer = ''
+	r = random.uniform(0, 1)
+	prob = 0.0
+	for key, va in Probabilities.items():
+		prob += float(va)
+		if float(r) <= float(prob):
+			kmer = key
+			return kmer 
+
+#Input: A string Text, a profile matrix Profile, and an integer k 
+#Output: ProfileGeneratedString(Text, profile, k)
+def ProfileGeneratedString(Text, profile, k):
+	n = len(Text)
+	probabilities = {}
+	for i in range(0, n-k+1):
+		probabilities[Text[i:i+k]] = Pr(Text[i:i+k], profile)
+	probabilities = Normalize(probabilities)
+	return WeightedDie(probabilities)
+
+
 
 		
 
