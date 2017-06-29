@@ -100,5 +100,85 @@ def GreedyMotifSearch(Dna, k, t):
             BestMotifs = Motifs
     return BestMotifs
 
-#
+#Input: A set of kmers Motifs
+#Output: Add 1 to every element in Motifs
+def CountWithPseudocounts(Motifs): 
+    count = {}
+    t = len(Motifs)
+    k = len(Motifs[0])
+    for symbol in "ACGT": 
+        count[symbol] = []
+        for j in range(k):
+            count[symbol].append(1)
+    for i in range(t):
+		for j in range(k):
+            symbol = Motifs[i][j]
+            count[symbol][j] += 1 
+	return count 
+
+#Input: A set of kmers Motifs 
+#Output: The Profile matrix adjusted with Laplace's Rule of Succession
+def ProfileWithPseudocounts(Motifs):
+	t = len(Motifs)
+	k = len(Motifs[0])
+	profile = CountWithPseudocounts(Motifs)
+	for x in profile:
+		for y in range(k):
+			profile[x][y] /= float(t+4) 
+	return profile
+
+#Input: A list of kmers Dna, and integers k and t (where t is the number of kmers in Dna)
+#Output: The consensus string from each string of Dna using greedy search
+def GreedyMotifSearchWithPseudocounts(Dna, k, t):
+	BestMotifs = []
+	for i in range(0, t):
+		BestMotifs.append(Dna[i][0:k])
+	n = len(Dna[0])
+	for i in range(n-k+1):
+		Motifs = []
+		Motif.append(Dna[0][i:i+k])
+		for j in range(1, t):
+			P = ProfileWithPseudocounts(Motifs[0:j])
+			Motif.append(ProfileMostProbablePattern(Dna[j], k, P))
+		if Score(Motifs) < Score(BestMotifs):
+	return BestMotifs
+
+#Input: A profile matrix Profile and a list of strings Dna
+#Output: A motif from Dna using the Profile
+def Motif(Profile, Dna):
+	motiflist = []
+	k = len(Profile['A'])
+	for i in range(len(Dna)):
+		mostprobable = ProfileMostProbablePattern(Dna[i], k, Profile)
+		motiflist.append(mostprobable)
+	return motiflist
+
+#Input:a list of strings Dna and integers k and t
+#Output: A random motif
+#t is essentially len(Dna). Also, remember to import random
+def RandomMotifs(Dna, k, t):
+	motiflist = []
+	for i in range(t):
+		s = random.randint(0, t-k) 
+		motiflist.append(Dna[i][s:s+k])
+	return motiflist
+
+#Input: Positive integers k and t, followed by a list of strings Dna
+#Output: A random motif (the one with the best score)
+def RandomizedMotifSearch(Dna, k, t):
+	M = RandomMotifs(Dna, k, t)
+	BestMotifs = M 
+	while True:
+		Profile = ProfileWithPseudocounts(M)
+		M = Motifs(Profile, Dna)
+		if Score(M) < Score(BestMotifs):
+			BestMotifs = M
+		else: 
+			return BestMotifs
+
+#Input: A dictionary Probabilites, where keys are k-mers and values are the probabilities of these k-mers (which do not necessary sum up to 1)
+
+		
+
+
             
