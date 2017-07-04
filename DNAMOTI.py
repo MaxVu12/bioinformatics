@@ -145,7 +145,7 @@ def GreedyMotifSearchWithPseudocounts(Dna, k, t):
 
 #Input: A profile matrix Profile and a list of strings Dna
 #Output: A motif from Dna using the Profile
-def Motif(Profile, Dna):
+def Motifs(Profile, Dna):
 	motiflist = []
 	k = len(Profile['A'])
 	for i in range(len(Dna)):
@@ -176,7 +176,7 @@ def RandomizedMotifSearch(Dna, k, t):
 		else: 
 			return BestMotifs
 
-#Input: A dictionary Probabilites, where keys are k-mers and values are the probabilities of these k-mers (which do not necessary sum up to 1)
+#Input: A dictionary Probabilities, where keys are k-mers and values are the probabilities of these k-mers (which do not necessary sum up to 1)
 #Output: A normalized dictionary where the probability of each k-mer was divided by the sum of all k-mers' probabilities
 def Normalize(Probabilities):
 	total = 0
