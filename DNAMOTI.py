@@ -56,9 +56,9 @@ def Score(Motifs):
     Score = 0
     for n in range(t):
         for m in range(len(ConsensusSequence)):
-            if Motifs[n][m]: != ConsensusSequence[m]:
+            if Motifs[n][m] != ConsensusSequence[m]:
                     Score += 1
-    return Score 
+    return Score
 
 #Input: String Text & profile matrix Profile
 #Output: The probability of the kmer (which is used to determine if it is close to being the consensus string) 
@@ -159,7 +159,7 @@ def Motif(Profile, Dna):
 def RandomMotifs(Dna, k, t):
 	motiflist = []
 	for i in range(t):
-		s = random.randint(0, t-k) 
+		s = random.randint(0, t-1) 
 		motiflist.append(Dna[i][s:s+k])
 	return motiflist
 
@@ -177,7 +177,7 @@ def RandomizedMotifSearch(Dna, k, t):
 			return BestMotifs
 
 #Input: A dictionary Probabilites, where keys are k-mers and values are the probabilities of these k-mers (which do not necessary sum up to 1)
-#Output: A normalized dictionary where the probability of each k-mer was divided by the sum of all k-mers' probbabilities
+#Output: A normalized dictionary where the probability of each k-mer was divided by the sum of all k-mers' probabilities
 def Normalize(Probabilities):
 	total = 0
 	for vals in Probabilities.values():
@@ -200,7 +200,7 @@ def WeightedDie(Probabilities):
 			return kmer 
 
 #Input: A string Text, a profile matrix Profile, and an integer k 
-#Output: ProfileGeneratedString(Text, profile, k)
+#Output: A randomly generated kmer from Text whose probabilities are generated from profile 
 def ProfileGeneratedString(Text, profile, k):
 	n = len(Text)
 	probabilities = {}
@@ -211,15 +211,41 @@ def ProfileGeneratedString(Text, profile, k):
 
 # To-do
 #     GibbsSampler(Dna, k, t, N)
-#         randomly select k-mers Motifs = (Motif1, …, Motift) in each string from Dna
+#         randomly select k-mers Motifs = (Motif1, …, Motift) in each string from Dna 
 #         ﻿BestMotifs ← Motifs
 #         for j ← 1 to N
 #             i ← randomly generated integer between 1 and t
 #             Profile ← profile matrix formed from all strings in Motifs except for Motifi
 #             Motifi ← Profile-randomly generated k-mer in the i-th string
-#             if Score(Motifs) < Score(BestMotifs)
+#             if Score(Motifs) < Score(BestMotifs) 
 #                 BestMotifs ← Motifs
 #         return BestMotifs
+
+#Input: A list of strings Dna, an integer k that represents the size of k-mer, an integer t that will be used to generate a random number and N, the number of time this algorithm is runned
+#Output: The best possible Motifs from Dna 
+def GibbsSampler(Dna, k, t, N):
+	motif = RandomMotifs(Dna, k, len(Dna))
+	BestMotifs = motif  
+	for j in range(N):
+		i = random.randint(0, t-1)
+		new_motif = motif[:i] + motif[i+1:]
+		profile = ProfileWithPseudocounts(new_motif)
+		motif[i] = ProfileGeneratedString(Dna[i], profile, k)
+		if Score(motif) < Score(BestMotifs):
+			BestMotifs = motif
+	return BestMotifs
+
+#For repeating GibbsSampler 
+def RepeatedGibbsSampler(Dna, k, t, N):
+    BestScore = float('inf')
+    BestMotifs = []
+    for i in range(100):
+        Motifs = GibbsSampler(Dna, k, t, N)
+        CurrScore = Score(Motifs)
+        if CurrScore < BestScore:
+            BestScore = CurrScore
+            BestMotifs = Motifs
+    return BestMotifs
 
 		
 
